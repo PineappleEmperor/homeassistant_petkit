@@ -531,11 +531,8 @@
         }
       },
       "text": {
-        "manual_feed_dual_h1": {
-          "name": "Manuelle F\u00fctterung Beh\u00e4lter 1"
-        },
-        "manual_feed_dual_h2": {
-          "name": "Manuelle F\u00fctterung Beh\u00e4lter 2"
+        "manual_feed_dual": {
+          "name": "Manuelle F\u00fctterung"
         },
         "manual_feed_single": {
           "name": "Manuelle F\u00fctterung"

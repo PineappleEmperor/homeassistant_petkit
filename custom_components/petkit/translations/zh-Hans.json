@@ -761,11 +761,8 @@
       }
     },
     "text": {
-      "manual_feed_dual_h1": {
-        "name": "1号粮仓手动出粮"
-      },
-      "manual_feed_dual_h2": {
-        "name": "2号粮仓手动出粮"
+      "manual_feed_dual": {
+        "name": "手动出粮"
       },
       "manual_feed_single": {
         "name": "手动出粮"

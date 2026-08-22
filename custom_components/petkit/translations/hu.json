@@ -917,11 +917,8 @@
       }
     },
     "text": {
-      "manual_feed_dual_h1": {
-        "name": "Kézi etetés hopper 1"
-      },
-      "manual_feed_dual_h2": {
-        "name": "Kézi etetés hopper 2"
+      "manual_feed_dual": {
+        "name": "Kézi etetés"
       },
       "manual_feed_single": {
         "name": "Kézi etetés"

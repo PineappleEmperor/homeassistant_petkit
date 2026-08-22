@@ -516,11 +516,8 @@
       }
     },
     "text": {
-      "manual_feed_dual_h1": {
-        "name": "Podanie r\u0119czne pojemnik 1"
-      },
-      "manual_feed_dual_h2": {
-        "name": "Podanie r\u0119czne pojemnik 2"
+      "manual_feed_dual": {
+        "name": "Podanie r\u0119czne"
       },
       "manual_feed_single": {
         "name": "Podanie r\u0119czne"
