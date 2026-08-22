@@ -957,10 +957,7 @@
       }
     },
     "text": {
-      "manual_feed_dual_h1": {
-        "default": "mdi:shaker-outline"
-      },
-      "manual_feed_dual_h2": {
+      "manual_feed_dual": {
         "default": "mdi:shaker-outline"
       },
       "manual_feed_single": {

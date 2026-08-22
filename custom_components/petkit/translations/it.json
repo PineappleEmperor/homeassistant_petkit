@@ -554,11 +554,8 @@
       }
     },
     "text": {
-      "manual_feed_dual_h1": {
-        "name": "Alimentazione manuale tramoggia 1"
-      },
-      "manual_feed_dual_h2": {
-        "name": "Alimentazione manuale tramoggia 2"
+      "manual_feed_dual": {
+        "name": "Alimentazione manuale"
       },
       "manual_feed_single": {
         "name": "Alimentazione manuale"

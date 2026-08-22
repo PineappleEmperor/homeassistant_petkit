@@ -768,11 +768,8 @@
             }
         },
         "text": {
-            "manual_feed_dual_h1": {
-                "name": "Alimentación manual Hopper 1"
-            },
-            "manual_feed_dual_h2": {
-                "name": "Alimentación manual Hopper 2"
+            "manual_feed_dual": {
+                "name": "Alimentación manual"
             },
             "manual_feed_single": {
                 "name": "Alimentación manual"

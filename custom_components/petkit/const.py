@@ -110,6 +110,9 @@ BATTERY_LEVEL_MAP = {
 
 # Text input regex
 INPUT_FEED_PATTERN = "^(0|[1-9][0-9]?|[1-3][0-9]{2}|400)$"
+# Dual hopper feeders take both amounts in one entry so a single API call
+# dispenses both; two separate calls are rejected by PetKit with code 1514.
+INPUT_FEED_DUAL_PATTERN = "^(0|[1-9]|10),(0|[1-9]|10)$"
 
 # Select list mapping
 SURPLUS_FOOD_LEVEL_OPT = {0: "Disabled", 1: "Less", 2: "Moderate", 3: "Full"}

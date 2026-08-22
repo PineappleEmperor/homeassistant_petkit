@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import timedelta
 from typing import TYPE_CHECKING, Any
 
 from pypetkitapi import (
@@ -25,7 +24,12 @@ from pypetkitapi import (
 
 from homeassistant.components.text import TextEntity, TextEntityDescription
 
-from .const import INPUT_FEED_PATTERN, LOGGER, POWER_ONLINE_STATE, SCAN_INTERVAL_FAST
+from .const import (
+    INPUT_FEED_DUAL_PATTERN,
+    INPUT_FEED_PATTERN,
+    LOGGER,
+    POWER_ONLINE_STATE,
+)
 from .entity import PetKitDescSensorBase, PetkitEntity
 
 if TYPE_CHECKING:
@@ -62,6 +66,12 @@ def _valid_manual_feed_values(device: PetkitDevices) -> list[int]:
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
+def _dual_feed_setting(value: str) -> dict[str, int]:
+    """Return the amount1/amount2 payload for a dual hopper feeder."""
+    amount1, amount2 = (int(part) for part in value.split(","))
+    return {"amount1": amount1, "amount2": amount2}
+
+
 TEXT_MAPPING: dict[type[PetkitDevices], list[PetkitTextDesc]] = {
     Feeder: [
         *COMMON_ENTITIES,
@@ -78,30 +88,16 @@ TEXT_MAPPING: dict[type[PetkitDevices], list[PetkitTextDesc]] = {
             only_for_types=[FEEDER, FEEDER_MINI, D3, D4, D4H],
         ),
         PetkitTextDesc(
-            key="Manual feed dual h1",
-            translation_key="manual_feed_dual_h1",
-            native_min=1,
-            native_max=2,
-            pattern=INPUT_FEED_PATTERN,
-            native_value="0",
+            key="Manual feed dual",
+            translation_key="manual_feed_dual",
+            native_min=3,
+            native_max=5,
+            pattern=INPUT_FEED_DUAL_PATTERN,
+            native_value="0,0",
             action=lambda api, device, amount_value: api.send_api_request(
                 device.id,
                 FeederCommand.MANUAL_FEED,
-                {"amount1": int(amount_value), "amount2": 0},
-            ),
-            only_for_types=[D4S, D4SH],
-        ),
-        PetkitTextDesc(
-            key="Manual feed dual h2",
-            translation_key="manual_feed_dual_h2",
-            native_min=1,
-            native_max=2,
-            pattern=INPUT_FEED_PATTERN,
-            native_value="0",
-            action=lambda api, device, amount_value: api.send_api_request(
-                device.id,
-                FeederCommand.MANUAL_FEED,
-                {"amount1": 0, "amount2": int(amount_value)},
+                _dual_feed_setting(amount_value),
             ),
             only_for_types=[D4S, D4SH],
         ),
@@ -193,14 +189,25 @@ class PetkitText(PetkitEntity, TextEntity):
         """Set manual feeding amount."""
 
         valid_values = _valid_manual_feed_values(self.device)
+        amounts = [int(part) for part in value.split(",")]
 
-        if int(value) not in valid_values:
+        # On a dual hopper a zero means "skip this hopper", so 0 is accepted per
+        # hopper even where the feeder's own value list excludes it — but both at
+        # zero dispenses nothing and the API errors rather than ignoring it.
+        is_dual = len(amounts) > 1
+        if is_dual and not any(amounts):
             raise ValueError(
-                f"Feeding value '{value}' is not valid for this feeder. Valid values are: {valid_values}"
+                f"Feeding value '{value}' dispenses nothing. Set at least one hopper above 0."
             )
 
-        self.coordinator.update_interval = timedelta(seconds=SCAN_INTERVAL_FAST)
-        self.coordinator.fast_poll_tic = 3
+        for amount in amounts:
+            if (is_dual and amount == 0) or amount in valid_values:
+                continue
+            raise ValueError(
+                f"Feeding value '{amount}' is not valid for this feeder. Valid values are: {valid_values}"
+            )
+
+        self.coordinator.enable_smart_polling(3)
         LOGGER.debug(
             "Setting value for : %s with value : %s", self.entity_description.key, value
         )
